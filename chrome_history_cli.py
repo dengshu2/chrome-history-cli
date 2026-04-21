@@ -212,7 +212,8 @@ def emit(data, fmt: str):
     if fmt == "json":
         print(json.dumps(data, ensure_ascii=False, indent=2))
     else:
-        print(yaml_dump(data))
+        # 空结果显式输出 `[]`，避免 agent 误以为命令挂了或被截断。
+        print(yaml_dump(data) if data else "[]")
 
 
 # -------------------- 历史记录 --------------------
@@ -299,16 +300,29 @@ def cmd_history_top(args):
     db = copy_to_temp(profile_dir(args.profile) / "History")
     try:
         conn = sqlite3.connect(db)
-        conds, params = build_time_clause(args)
-        where = ("WHERE " + " AND ".join(conds)) if conds else ""
-        sql = f"""
-            SELECT url, title, visit_count, last_visit_time
-            FROM urls
-            {where}
-            ORDER BY visit_count DESC
-            LIMIT ?
-        """
-        params.append(args.limit)
+        if args.since or args.until:
+            # 时间窗模式：JOIN visits 表按窗口 COUNT。
+            # urls.visit_count 是终生累计，直接按它排序会违反"窗口内 top"的语义。
+            conds, params = build_time_clause(args, time_col="v.visit_time")
+            where = "WHERE " + " AND ".join(conds)
+            sql = f"""
+                SELECT u.url, u.title, COUNT(v.id) AS window_visits, MAX(v.visit_time) AS last
+                FROM visits v JOIN urls u ON u.id = v.url
+                {where}
+                GROUP BY u.id
+                ORDER BY window_visits DESC
+                LIMIT ?
+            """
+            params.append(args.limit)
+        else:
+            # 无时间窗：用 urls 表已聚合的 visit_count，单表查询更快。
+            sql = """
+                SELECT url, title, visit_count, last_visit_time
+                FROM urls
+                ORDER BY visit_count DESC
+                LIMIT ?
+            """
+            params = [args.limit]
         rows = conn.execute(sql, params).fetchall()
         conn.close()
     finally:
@@ -330,14 +344,19 @@ def cmd_history_domains(args):
     db = copy_to_temp(profile_dir(args.profile) / "History")
     try:
         conn = sqlite3.connect(db)
-        conds, params = build_time_clause(args)
-        where = ("WHERE " + " AND ".join(conds)) if conds else ""
-        sql = f"""
-            SELECT url, visit_count
-            FROM urls
-            {where}
-        """
-        rows = conn.execute(sql, params).fetchall()
+        if args.since or args.until:
+            # 时间窗模式：按 visits 表真正计窗口内访问数，避免混入终生累计。
+            conds, params = build_time_clause(args, time_col="v.visit_time")
+            where = "WHERE " + " AND ".join(conds)
+            sql = f"""
+                SELECT u.url, COUNT(v.id) AS visits
+                FROM visits v JOIN urls u ON u.id = v.url
+                {where}
+                GROUP BY u.id
+            """
+            rows = conn.execute(sql, params).fetchall()
+        else:
+            rows = conn.execute("SELECT url, visit_count FROM urls").fetchall()
         conn.close()
     finally:
         _cleanup(db)

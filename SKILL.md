@@ -78,9 +78,9 @@ chrome-history-cli history domains -n 20
 
 **字段说明**：
 - `url` / `title` — 页面 URL 与标题
-- `visit_count` — 该 URL 累计访问次数
+- `visit_count` — 该 URL 的访问次数。**不带 `--since/--until` 时是终生累计**；带时间窗时，`top` 命令返回的是**窗口内访问次数**（JOIN `visits` 表实算）。
 - `last_visit` — 最近访问时间（本地时区 ISO 格式）
-- `domains` 命令额外字段：`visits`（域名下所有 URL 访问总和）、`pages`（该域名下独立 URL 数）
+- `domains` 命令额外字段：`visits`（域名下所有 URL 访问总和；时间窗下为窗口内真实计数）、`pages`（该域名下独立 URL 数）
 
 ### 书签
 
@@ -163,6 +163,12 @@ A: Chrome 用的是 WebKit 时间戳（1601-01-01 起的微秒数）。脚本已
 
 **Q: `--since 2026-04-01` 包含当天吗？**
 A: 包含。`--until 2026-04-15` 包含到 04-15 的 23:59:59。
+
+**Q: `history top --since` 返回的 `visit_count` 是什么？**
+A: 是**窗口内**的访问次数（通过 JOIN `visits` 表按 `visit_time` 实算），不是终生累计。不带 `--since/--until` 时走快速路径，直接读 `urls.visit_count`（终生累计）。
+
+**Q: 空结果怎么显示？**
+A: YAML 输出 `[]`，JSON 输出 `[]`。便于区分"查了没结果" vs "命令挂了"。
 
 **Q: 为什么 `history domains` 的 pages 数比 urls 表的总行数小？**
 A: 因为 `--since/--until` 过滤了时间；不加时间参数时，pages 数应等于 urls 表的总行数（除非有隐藏记录）。
