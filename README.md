@@ -1,4 +1,4 @@
-# chrome-cli
+# chrome-history-cli
 
 一个跨平台的命令行工具，用于从本地 Chrome 读取**浏览历史**与**书签**。只读，不修改任何 Chrome 数据。
 
@@ -11,17 +11,17 @@
 
 ## 安装
 
-要求 Python 3.8+。下载 `chrome_cli.py` 到任意目录即可：
+要求 Python 3.8+。下载 `chrome_history_cli.py` 到任意目录即可：
 
 ```bash
-curl -O https://raw.githubusercontent.com/dengshu2/chrome-history-cli/main/chrome_cli.py
-python3 chrome_cli.py profiles
+curl -O https://raw.githubusercontent.com/dengshu2/chrome-history-cli/main/chrome_history_cli.py
+python3 chrome_history_cli.py profiles
 ```
 
-作为 Claude Code Skill 使用：把整个仓库（包含 `SKILL.md` 和 `chrome_cli.py`）放到 `~/.claude/skills/chrome-cli/` 即可。
+作为 Claude Code Skill 使用：把整个仓库（包含 `SKILL.md` 和 `chrome_history_cli.py`）放到 `~/.claude/skills/chrome-history-cli/` 即可。
 
 ```bash
-git clone https://github.com/dengshu2/chrome-history-cli.git ~/.claude/skills/chrome-cli
+git clone https://github.com/dengshu2/chrome-history-cli.git ~/.claude/skills/chrome-history-cli
 ```
 
 ## 支持的 Chrome 数据位置
@@ -42,34 +42,34 @@ export CHROME_USER_DATA_DIR="$HOME/Library/Application Support/Google/Chrome Can
 
 ```bash
 # 列出所有 Chrome profile
-python3 chrome_cli.py profiles
+python3 chrome_history_cli.py profiles
 
 # 最近 50 条浏览记录
-python3 chrome_cli.py history list
+python3 chrome_history_cli.py history list
 
 # 搜索标题 / URL 包含 "github" 的记录
-python3 chrome_cli.py history search "github"
+python3 chrome_history_cli.py history search "github"
 
 # 某段时间内访问最多的 URL
-python3 chrome_cli.py history top --since 2026-04-01 -n 30
+python3 chrome_history_cli.py history top --since 2026-04-01 -n 30
 
 # 按域名聚合统计
-python3 chrome_cli.py history domains -n 20
+python3 chrome_history_cli.py history domains -n 20
 
 # 全部书签（按添加时间倒序）
-python3 chrome_cli.py bookmarks list
+python3 chrome_history_cli.py bookmarks list
 
 # 搜索书签
-python3 chrome_cli.py bookmarks search "react"
+python3 chrome_history_cli.py bookmarks search "react"
 
 # 树形展示整棵书签树
-python3 chrome_cli.py bookmarks tree
+python3 chrome_history_cli.py bookmarks tree
 
 # 切换 profile
-python3 chrome_cli.py history list --profile "Profile 1"
+python3 chrome_history_cli.py history list --profile "Profile 1"
 
 # 切换为 JSON 输出
-python3 chrome_cli.py history list --format json -n 100
+python3 chrome_history_cli.py history list --format json -n 100
 ```
 
 完整命令列表和字段说明见 [`SKILL.md`](./SKILL.md)。

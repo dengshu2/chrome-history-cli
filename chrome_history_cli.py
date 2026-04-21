@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""chrome-cli: 从本地 Chrome 读取历史记录与书签（跨平台：Windows / macOS / Linux）。"""
+"""chrome-history-cli: 从本地 Chrome 读取历史记录与书签（跨平台：Windows / macOS / Linux）。"""
 
 from __future__ import annotations
 
@@ -99,7 +99,7 @@ def profile_dir(profile: str) -> Path:
 def copy_to_temp(src: Path) -> Path:
     if not src.exists():
         sys.exit(f"错误：文件不存在：{src}")
-    fd, tmp = tempfile.mkstemp(prefix="chrome_cli_", suffix=".db")
+    fd, tmp = tempfile.mkstemp(prefix="chrome_history_cli_", suffix=".db")
     os.close(fd)
     shutil.copy2(src, tmp)
     # 同时复制 SQLite 附属文件（rollback journal / WAL / shared-memory），
@@ -482,7 +482,7 @@ def add_common(sp: argparse.ArgumentParser, with_query: bool = False, with_time:
 
 
 def main():
-    parser = argparse.ArgumentParser(prog="chrome-cli", description="读取本地 Chrome 历史记录与书签")
+    parser = argparse.ArgumentParser(prog="chrome-history-cli", description="读取本地 Chrome 历史记录与书签")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     # profiles

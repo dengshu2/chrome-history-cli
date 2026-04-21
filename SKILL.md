@@ -1,9 +1,9 @@
 ---
-name: chrome-cli
-description: "chrome-cli — 从本地 Chrome 读取浏览历史与书签（支持 Windows / macOS / Linux）。当用户提到 Chrome/谷歌浏览器的历史记录、访问记录、浏览历史、书签、收藏夹、bookmarks 时使用此 skill。"
+name: chrome-history-cli
+description: "chrome-history-cli — 从本地 Chrome 读取浏览历史与书签（支持 Windows / macOS / Linux）。当用户提到 Chrome/谷歌浏览器的历史记录、访问记录、浏览历史、书签、收藏夹、bookmarks 时使用此 skill。"
 ---
 
-# chrome-cli
+# chrome-history-cli
 
 从本地 Chrome 读取**浏览历史**与**书签**。只读，不修改任何 Chrome 数据。支持 Windows / macOS / Linux。
 
@@ -31,25 +31,25 @@ description: "chrome-cli — 从本地 Chrome 读取浏览历史与书签（支�
 
 脚本路径依平台不同：
 
-- Windows: `%USERPROFILE%\.claude\skills\chrome-cli\chrome_cli.py`
-- macOS / Linux: `~/.claude/skills/chrome-cli/chrome_cli.py`
+- Windows: `%USERPROFILE%\.claude\skills\chrome-history-cli\chrome_history_cli.py`
+- macOS / Linux: `~/.claude/skills/chrome-history-cli/chrome_history_cli.py`
 
 统一入口：
 
 ```bash
-python3 ~/.claude/skills/chrome-cli/chrome_cli.py <subcommand> ...
+python3 ~/.claude/skills/chrome-history-cli/chrome_history_cli.py <subcommand> ...
 ```
 
-为简洁起见，下文示例省略前缀，写作 `chrome-cli <subcommand>`。
+为简洁起见，下文示例省略前缀，写作 `chrome-history-cli <subcommand>`。
 
 ## 命令速查
 
-所有命令默认输出 YAML（省 token）；加 `--json` 切换为 JSON。
+所有命令默认输出 YAML（省 token）；加 `--format json` 切换为 JSON。
 
 ### Profile 管理
 
 ```bash
-chrome-cli profiles                    # 列出所有 Chrome profile
+chrome-history-cli profiles                    # 列出所有 Chrome profile
 ```
 
 Chrome 的账号/配置以 profile 形式存在（`Default`、`Profile 1`、`Profile 2`...）。所有子命令默认使用 `Default`，用 `--profile "Profile 1"` 切换。
@@ -58,22 +58,22 @@ Chrome 的账号/配置以 profile 形式存在（`Default`、`Profile 1`、`Pro
 
 ```bash
 # 最近访问（按时间倒序）
-chrome-cli history list                # 默认 50 条
-chrome-cli history list -n 200
+chrome-history-cli history list                # 默认 50 条
+chrome-history-cli history list -n 200
 
 # 按时间范围
-chrome-cli history list --since 2026-04-01
-chrome-cli history list --since 2026-04-01 --until 2026-04-15 -n 500
+chrome-history-cli history list --since 2026-04-01
+chrome-history-cli history list --since 2026-04-01 --until 2026-04-15 -n 500
 
 # 搜索 URL 或标题
-chrome-cli history search "github"
-chrome-cli history search "claude" --since 2026-04-01 -n 100
+chrome-history-cli history search "github"
+chrome-history-cli history search "claude" --since 2026-04-01 -n 100
 
 # 访问次数最多的 URL
-chrome-cli history top -n 30
+chrome-history-cli history top -n 30
 
 # 按域名聚合（访问总数、独立页面数）
-chrome-cli history domains -n 20
+chrome-history-cli history domains -n 20
 ```
 
 **字段说明**：
@@ -86,18 +86,18 @@ chrome-cli history domains -n 20
 
 ```bash
 # 全部书签（扁平列表，按添加时间倒序）
-chrome-cli bookmarks list
-chrome-cli bookmarks list -n 500
+chrome-history-cli bookmarks list
+chrome-history-cli bookmarks list -n 500
 
 # 搜索书签（匹配 name / url）
-chrome-cli bookmarks search "react"
+chrome-history-cli bookmarks search "react"
 
 # 某文件夹下的书签（模糊匹配文件夹路径）
-chrome-cli bookmarks folder "工作"
-chrome-cli bookmarks folder "书签栏"
+chrome-history-cli bookmarks folder "工作"
+chrome-history-cli bookmarks folder "书签栏"
 
 # 树形展示整个书签结构
-chrome-cli bookmarks tree
+chrome-history-cli bookmarks tree
 ```
 
 **字段说明**：
@@ -112,10 +112,10 @@ chrome-cli bookmarks tree
 
 ## Agent 使用建议
 
-1. **不确定用哪个 profile 时**，先跑 `chrome-cli profiles` 查看账号绑定
+1. **不确定用哪个 profile 时**，先跑 `chrome-history-cli profiles` 查看账号绑定
 2. **大批量分析时**加 `--format json` 方便程序处理：
    ```bash
-   chrome-cli history list --format json -n 1000 > /tmp/hist.json
+   chrome-history-cli history list --format json -n 1000 > /tmp/hist.json
    ```
 3. **模糊需求**（"前几天看过那个讲 X 的网站"）用 `history search`，再配合 `--since` 缩小时间窗
 4. **找某个主题的资料积累**用 `bookmarks search`
