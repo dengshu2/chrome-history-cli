@@ -14,14 +14,14 @@
 要求 Python 3.8+。下载 `chrome_cli.py` 到任意目录即可：
 
 ```bash
-curl -O https://raw.githubusercontent.com/<USER>/<REPO>/main/chrome_cli.py
+curl -O https://raw.githubusercontent.com/dengshu2/chrome-history-cli/main/chrome_cli.py
 python3 chrome_cli.py profiles
 ```
 
 作为 Claude Code Skill 使用：把整个仓库（包含 `SKILL.md` 和 `chrome_cli.py`）放到 `~/.claude/skills/chrome-cli/` 即可。
 
 ```bash
-git clone https://github.com/<USER>/<REPO>.git ~/.claude/skills/chrome-cli
+git clone https://github.com/dengshu2/chrome-history-cli.git ~/.claude/skills/chrome-cli
 ```
 
 ## 支持的 Chrome 数据位置
