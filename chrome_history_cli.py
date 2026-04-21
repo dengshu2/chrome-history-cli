@@ -372,6 +372,47 @@ def cmd_history_domains(args):
     emit(items, args.format)
 
 
+def cmd_history_searches(args):
+    db = copy_to_temp(profile_dir(args.profile) / "History")
+    try:
+        conn = sqlite3.connect(db)
+        conds = []
+        params: list = []
+        if args.query:
+            conds.append("k.term LIKE ?")
+            params.append(f"%{args.query}%")
+        time_conds, time_params = build_time_clause(args, time_col="u.last_visit_time")
+        conds.extend(time_conds)
+        params.extend(time_params)
+        where = ("WHERE " + " AND ".join(conds)) if conds else ""
+        sql = f"""
+            SELECT k.term, u.url, u.visit_count, u.last_visit_time
+            FROM keyword_search_terms k
+            JOIN urls u ON u.id = k.url_id
+            {where}
+            ORDER BY u.last_visit_time DESC
+            LIMIT ?
+        """
+        params.append(args.limit)
+        rows = conn.execute(sql, params).fetchall()
+        conn.close()
+    finally:
+        _cleanup(db)
+
+    # engine 直接用 URL host 推断（如 www.google.com）。Chrome 的 keywords
+    # 映射表在 Web Data 这个独立 DB 里，不额外引入依赖。
+    items = [
+        {
+            "term": term,
+            "engine": urlparse(url).hostname or "(unknown)",
+            "count": visit_count,
+            "last": chrome_time_to_iso(lvt),
+        }
+        for term, url, visit_count, lvt in rows
+    ]
+    emit(items, args.format)
+
+
 def _cleanup(tmp: Path):
     try:
         os.unlink(tmp)
@@ -529,6 +570,11 @@ def main():
     sp = hist_sub.add_parser("domains", help="按域名聚合统计")
     add_common(sp)
     sp.set_defaults(func=cmd_history_domains)
+
+    sp = hist_sub.add_parser("searches", help="Omnibox 搜索词（keyword_search_terms）")
+    sp.add_argument("query", nargs="?", default=None, help="可选：模糊匹配搜索词")
+    add_common(sp)
+    sp.set_defaults(func=cmd_history_searches)
 
     # bookmarks
     p_bm = sub.add_parser("bookmarks", help="书签")

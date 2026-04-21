@@ -56,6 +56,9 @@ python3 chrome_history_cli.py history top --since 2026-04-01 -n 30
 # 按域名聚合统计
 python3 chrome_history_cli.py history domains -n 20
 
+# Omnibox 搜索词
+python3 chrome_history_cli.py history searches "claude" -n 20
+
 # 全部书签（按添加时间倒序）
 python3 chrome_history_cli.py bookmarks list
 

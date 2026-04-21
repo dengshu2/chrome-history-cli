@@ -74,6 +74,11 @@ chrome-history-cli history top -n 30
 
 # 按域名聚合（访问总数、独立页面数）
 chrome-history-cli history domains -n 20
+
+# Omnibox 搜索词（你在地址栏里搜过的关键词）
+chrome-history-cli history searches                       # 最近搜索
+chrome-history-cli history searches "claude" -n 30        # 含关键词的搜索
+chrome-history-cli history searches --since 2026-04-01    # 时间窗内
 ```
 
 **字段说明**：
@@ -81,6 +86,7 @@ chrome-history-cli history domains -n 20
 - `visit_count` — 该 URL 的访问次数。**不带 `--since/--until` 时是终生累计**；带时间窗时，`top` 命令返回的是**窗口内访问次数**（JOIN `visits` 表实算）。
 - `last_visit` — 最近访问时间（本地时区 ISO 格式）
 - `domains` 命令额外字段：`visits`（域名下所有 URL 访问总和；时间窗下为窗口内真实计数）、`pages`（该域名下独立 URL 数）
+- `searches` 命令字段：`term`（搜索词原文）、`engine`（搜索页 host，如 `www.google.com`）、`count`（该搜索 URL 累计命中次数，≈ 用户搜同一词的次数）、`last`（最近一次搜索时间）
 
 ### 书签
 
@@ -174,7 +180,7 @@ A: YAML 输出 `[]`，JSON 输出 `[]`。便于区分"查了没结果" vs "命�
 A: 因为 `--since/--until` 过滤了时间；不加时间参数时，pages 数应等于 urls 表的总行数（除非有隐藏记录）。
 
 **Q: 搜索词本身（Omnibox 搜索）能查吗？**
-A: 当前命令覆盖 `urls` 表。`keyword_search_terms` 表（搜索词）暂未暴露，如需可扩展。
+A: 可以，用 `history searches`。数据来自 `keyword_search_terms` 表。注意：只覆盖走 Chrome "已知搜索引擎模板"的搜索（通常就是地址栏搜索、或在被注册为搜索引擎的站点里的搜索框）。直接在 google.com 首页输入框敲下去的搜索不一定进这张表。`engine` 字段是搜索页 host，不是 Chrome 内部的搜索引擎名（Chrome 的 `keywords` 映射表在独立的 `Web Data` DB 里，本工具不读那个文件）。
 
 **Q: 我用的是 Chrome Canary / Beta / Chromium，怎么办？**
 A: 设置环境变量 `CHROME_USER_DATA_DIR` 指向对应的 User Data 目录即可。例如 macOS 上的 Chrome Canary：
