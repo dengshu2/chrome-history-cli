@@ -1,20 +1,11 @@
 ---
 name: chrome-history-cli
-description: "chrome-history-cli — 从本地 Chrome 读取浏览历史与书签（支持 Windows / macOS / Linux）。当用户提到 Chrome/谷歌浏览器的历史记录、访问记录、浏览历史、书签、收藏夹、bookmarks 时使用此 skill。"
+description: "Read local Chrome history and bookmarks safely on Windows, macOS, and Linux. Use when the user asks about Chrome/谷歌浏览器的浏览历史、访问记录、最近或经常访问的网站、书签、收藏夹、bookmarks，或想找前几天看过的网页。"
 ---
 
 # chrome-history-cli
 
 从本地 Chrome 读取**浏览历史**与**书签**。只读，不修改任何 Chrome 数据。支持 Windows / macOS / Linux。
-
-## Triggers
-
-- 查 Chrome 历史记录 / 浏览记录 / 访问历史
-- Chrome 书签 / 收藏夹 / bookmarks
-- 最近访问的网站 / 访问最多的网站
-- 谷歌浏览器历史 / 谷歌浏览器书签
-- chrome history / bookmarks
-- "我前几天看过那个网站"
 
 ## Prerequisites
 
@@ -29,18 +20,24 @@ description: "chrome-history-cli — 从本地 Chrome 读取浏览历史与书�
 
 ## 调用方式
 
-脚本路径依平台不同：
+`chrome_history_cli.py` 与本文件位于同一 skill 目录。根据读取本文件时的
+实际路径确定 `<skill-dir>`，始终用脚本的绝对路径调用；不要假设 skill
+一定安装在 `.agents`、`.claude` 或其他固定目录，因为它也可能来自仓库、
+插件或符号链接。
 
-- Windows: `%USERPROFILE%\.claude\skills\chrome-history-cli\chrome_history_cli.py`
-- macOS / Linux: `~/.claude/skills/chrome-history-cli/chrome_history_cli.py`
+Windows：
 
-统一入口：
-
-```bash
-python3 ~/.claude/skills/chrome-history-cli/chrome_history_cli.py <subcommand> ...
+```powershell
+python "<skill-dir>\chrome_history_cli.py" <subcommand> ...
 ```
 
-为简洁起见，下文示例省略前缀，写作 `chrome-history-cli <subcommand>`。
+macOS / Linux：
+
+```bash
+python3 "<skill-dir>/chrome_history_cli.py" <subcommand> ...
+```
+
+下文用 `chrome-history-cli <subcommand>` 代表上述完整调用。
 
 ## 命令速查
 
@@ -121,7 +118,7 @@ chrome-history-cli bookmarks tree
 1. **不确定用哪个 profile 时**，先跑 `chrome-history-cli profiles` 查看账号绑定
 2. **大批量分析时**加 `--format json` 方便程序处理：
    ```bash
-   chrome-history-cli history list --format json -n 1000 > /tmp/hist.json
+   chrome-history-cli history list --format json -n 1000 > <temp-dir>/hist.json
    ```
 3. **模糊需求**（"前几天看过那个讲 X 的网站"）用 `history search`，再配合 `--since` 缩小时间窗
 4. **找某个主题的资料积累**用 `bookmarks search`
