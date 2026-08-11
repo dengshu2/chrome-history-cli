@@ -18,11 +18,24 @@ curl -O https://raw.githubusercontent.com/dengshu2/chrome-history-cli/main/chrom
 python3 chrome_history_cli.py profiles
 ```
 
-作为 Claude Code Skill 使用：把整个仓库（包含 `SKILL.md` 和 `chrome_history_cli.py`）放到 `~/.claude/skills/chrome-history-cli/` 即可。
+作为标准 Agent Skill 使用：把整个仓库（包含 `SKILL.md` 和
+`chrome_history_cli.py`）放到用户级 skill 目录
+`~/.agents/skills/chrome-history-cli/`。
 
 ```bash
-git clone https://github.com/dengshu2/chrome-history-cli.git ~/.claude/skills/chrome-history-cli
+mkdir -p ~/.agents/skills
+git clone https://github.com/dengshu2/chrome-history-cli.git ~/.agents/skills/chrome-history-cli
 ```
+
+Windows PowerShell：
+
+```powershell
+New-Item -ItemType Directory -Force -Path "$HOME\.agents\skills" | Out-Null
+git clone https://github.com/dengshu2/chrome-history-cli.git "$HOME\.agents\skills\chrome-history-cli"
+```
+
+该目录同时兼容采用开放 Agent Skills 标准的客户端。Codex 会从用户级
+`.agents/skills` 目录自动发现它。
 
 ## 支持的 Chrome 数据位置
 

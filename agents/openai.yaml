@@ -1,0 +1,4 @@
+interface:
+  display_name: "Chrome History & Bookmarks"
+  short_description: "Search local Chrome history and bookmarks"
+  default_prompt: "Use $chrome-history-cli to find a recently visited page in my local Chrome history."
