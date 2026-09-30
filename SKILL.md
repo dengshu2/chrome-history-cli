@@ -1,20 +1,11 @@
 ---
 name: chrome-history-cli
-description: "chrome-history-cli — 从本地 Chrome 读取浏览历史与书签（支持 Windows / macOS / Linux）。当用户提到 Chrome/谷歌浏览器的历史记录、访问记录、浏览历史、书签、收藏夹、bookmarks 时使用此 skill。"
+description: "chrome-history-cli — 从本地 Chrome 读取浏览历史与书签（支持 Windows / macOS / Linux）。当用户提到 Chrome/谷歌浏览器的历史记录、访问记录、浏览历史、书签、收藏夹、bookmarks，或想找回「前几天看过的那个网站」、最近/最常访问的网站时使用此 skill。"
 ---
 
 # chrome-history-cli
 
 从本地 Chrome 读取**浏览历史**与**书签**。只读，不修改任何 Chrome 数据。支持 Windows / macOS / Linux。
-
-## Triggers
-
-- 查 Chrome 历史记录 / 浏览记录 / 访问历史
-- Chrome 书签 / 收藏夹 / bookmarks
-- 最近访问的网站 / 访问最多的网站
-- 谷歌浏览器历史 / 谷歌浏览器书签
-- chrome history / bookmarks
-- "我前几天看过那个网站"
 
 ## Prerequisites
 
